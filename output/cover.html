@@ -1,0 +1,90 @@
+<html>
+<head>
+
+    <!--JQuery-->
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <!--Jira Release Notes Javascript-->
+    <script src="js/JRN_read_project_title.js"></script>
+    <script src="js/JRN_read_version_release_date.js"></script>
+    <script src="js/JRN_read_version_logo.js"></script>
+    <script src="js/JRN_count_issues.js"></script>
+
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+hr { margin-top: 5px; margin-bottom: 5px }
+
+.small.red {
+  font-size: 9px;
+  color: red;
+}
+
+.small.green {
+  font-size: 9px;
+  color: green;
+}
+</style>
+</head>  
+
+  <body>
+    <!-- Header -->
+    <center>
+    <header>
+      <div class="page-header">
+        <h1><div id="fixVersion1"><script>read_project_title();</script></div>
+          <small>Release Status Report</small></h1>
+          <h4><b>Release Date</b><div id="releaseDate"><script>read_version_release_date();</script></div></h4>
+      </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12" id="versionLogo"><script>read_version_logo();</script></div>
+            </div>
+        </div>
+      <center>
+    <table width="75%">
+
+
+      <tr><td align="center">
+              <h3>Tasks</h3>
+              <br>
+              <h3><div id="openTaskCount"><script>count_issues("tasks", "open");</script></h3>
+              <div class="small green">Open</div>
+              <hr>
+              <div class="small red">Closed</div>
+              <h3><div id="closedTaskCount"><script>count_issues("tasks", "closed");</script></h3>
+      </td>
+      <td align="center">
+        <!--<div class="row">-->
+            <div class="caption">
+                        <div class="thumbnail">
+              <h3>Stories</h3>
+              <br>
+              <h3><div id="openStoryCount"><script>count_issues("stories", "open");</script></h3>
+              <div class="small green">Open</div>
+              <hr>
+              <div class="small red">Closed</div>
+              <h3><div id="closedStoryCount"><script>count_issues("stories", "closed");</script></h3>
+            </div>
+          </div>
+        <!--</div>-->
+      </td>
+      <td align="center">
+              <h3>Bugs</h3>
+              <br>
+              <h3><div id="openBugCount"><script>count_issues("bugs", "open");</script></h3>
+              <div class="small green">Open</div>
+              <hr>
+              <div class="small red">Closed</div>
+              <h3><div id="closedBugCount"><script>count_issues("bugs", "closed");</script></h3>
+      </td>
+      </tr>
+      <tr>
+        <td colspan="3"><hr></td>
+      </tr>
+    </table>
+  </header>
+</body>
+</html>

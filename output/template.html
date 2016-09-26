@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Release Notes</title>
+
+  <!--JQuery-->
+  <script src="js/jquery-2.1.1.min.js"></script>
+  <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+  <!--Jira Release Notes Javascript-->
+  <script src="js/JRN_read_project_title.js"></script>
+  <script src="js/JRN_read_version_release_date.js"></script>
+  <script src="js/JRN_read_start_date.js"></script>
+  <script src="js/JRN_read_average_closures.js"></script>
+  <script src="js/JRN_read_average_time_in_progress.js"></script>
+  <script src="js/JRN_count_issues.js"></script>
+
+  <script src="js/JRN_read_json_status_changes.js"></script>
+  <script src="js/JRN_read_json_blocked_issues.js"></script>
+
+  <script src="js/JRN_read_json_open_stories.js"></script>
+  <script src="js/JRN_read_json_closed_stories.js"></script>
+
+  <script src="js/JRN_read_json_open_tasks.js"></script>
+  <script src="js/JRN_read_json_closed_tasks.js"></script>
+
+  <script src="js/JRN_read_json_open_bugs.js"></script>
+  <script src="js/JRN_read_json_closed_bugs.js"></script>
+
+  <!--HIGHCHARTS-->
+  <script src="js/highcharts.js"></script>
+  <script src="js/exporting.js"></script>  
+  <script src="js/technical-indicators.src.js"></script>
+
+  <!-- Bootstrap -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+  <!--NOTE: In order to render the chart jquery must appear above highcharts-->
+  <script src="js/highcharts.js"></script>
+  <script src="js/exporting.js"></script>
+  <script type="text/javascript">
+  $(function () {
+
+    var processed_data = new Array();   
+    var processed_cats = new Array();   
+    $.getJSON('json/chartData.json', function(data) {
+
+                    // Populate series
+                    for (i = 0; i < data.length; i++){
+                      processed_data.push([parseInt(data[i].value)]);
+                      processed_cats.push([(data[i].key)]);
+                    }
+
+                    // draw chart
+                    $('#container').highcharts({
+                      exporting: {
+                        enabled: false
+                      },
+                      plotOptions: { 
+                        series: { 
+                          enableMouseTracking: false,
+                          shadow: false,
+                          animation: false 
+                        }
+                      },  
+                      chart: {
+                        type: "spline"
+                      },
+                      title: {
+                        text: ""
+                      },
+                      xAxis: {
+                        //allowDecimals: false,
+                        title: {
+                          text: "Date"
+                        },
+                        labels: {
+                          rotation: -60
+                        },
+                        
+                        categories: processed_cats
+                      },
+                      yAxis: {
+                        title: {
+                          text: "Number of tickets"
+                        },
+                        min : 0,
+                        tickInterval: 5,
+                      },
+                      series: [{
+                        name: "Total Issues",
+                        id: 'primary',
+                        data: processed_data
+                      }, {
+                        name: 'Linear Trendline',
+                        linkedTo: 'primary',
+                        showInLegend: true,
+                        enableMouseTracking: false,
+                        type: 'trendline',
+                        algorithm: 'linear'
+                      }]
+                    }); 
+});
+});
+</script>  
+
+
+
+
+
+
+<style>
+
+h2 {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+table {
+  border: 0;
+  font-size:10px;
+}
+
+.inline {
+  display: inline;
+}
+
+.page-breaker {
+  display: block;
+  page-break-after: always;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.yellow {
+  color: orange;
+}
+
+</style>
+
+
+</head>
+<body>
+
+
+  <!-- END HEADER -->
+  
+  <center>
+    <table width="95%">
+      <tr>
+        <td>
+          <h2>Burndown for <div id="fixVersion1" class="inline"><script>read_project_title();</script></div></h2>  
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="container" style="min-width: 700px; height: 400px; margin: 0 auto"></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>EXECUTIVE SUMMARY:</B>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          The first issue closed for version <b><div id="fixVersion2" class="inline"></div></b> was on <div id="startDate" class="inline"><script>read_start_date();</script></div>. The average number of issues closed for this version is <div id="averageClosures" class="inline"><script>read_average_closures();</script></div> per week.
+        </td>
+      </tr>
+
+      </table>
+
+
+
+
+        <table width="95%">
+          <tr>
+            <td>
+              <h2>Currently Blocked Issues</h2>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="panel panel-default" id="blocked_panel">
+                <!-- Default panel contents -->
+                <!--<div class="panel-heading"></div>-->
+
+                <!-- Table -->
+                
+                <table class="table" id="status_blocked_table" width="75%">         
+                  <script>
+                  read_json_blocked_issues();
+                  </script>
+
+                </table>
+              </div>       
+            </td>
+          </tr>
+        </table>  
+
+        <div class="page-breaker"></div>
+
+        <table width="95%">
+          <tr>
+            <td>
+              <h2>Activity This Week</h2>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <!--<div class="panel-heading"></div>-->
+
+                <!-- Table -->
+                <table class="table" id="status_change_table" width="75%">
+                  <tr>
+                    <th></th>
+                    <th>Jira ID</th>
+                    <th>Moved to</th>
+                    <th>Summary</th>
+                  </tr>            
+                  <script>
+                  read_json_status_changes();
+                  </script>
+
+                </table>
+              </div>       
+            </td>
+          </tr>
+        </table>  
+
+        <table width="95%"><tr><td>
+
+          <!--TABLE BAR-->
+          <div class="page-breaker"></div>
+          <div class="page-header">
+            <h1>Closed Issues</h1>
+          </div>
+
+          <h2>Closed Stories</h2>
+          <div class="panel panel-default">
+
+            <!-- Default panel contents -->
+
+
+            <!-- Table -->
+            <table class="table" id="closed_story_table" width="75%">
+              <tr>
+                <th></th>
+                <th>Jira ID</th>
+                <th>Summary</th>
+              </tr>            
+              <script>
+              read_json_closed_stories();
+              </script>
+
+            </table>
+          </div> 
+
+          <!--TABLE BAR-->
+          <h2>Closed Tasks</h2>
+          <div class="panel panel-default">
+            <!-- Default panel contents -->
+
+            <!-- Table -->
+            <table class="table" id="closed_task_table" width="75%">
+              <tr>
+                <th></th>
+                <th>Jira ID</th>
+                <th>Summary</th>
+              </tr>
+
+              <script>
+              read_json_closed_tasks();
+              </script>
+
+            </table>
+          </div> 
+
+          <!--TABLE BAR-->
+          <h2>Closed Bugs</h2>
+          <div class="panel panel-default">
+
+
+            <!-- Table -->
+            <table class="table" id="closed_bug_table" width="75%">
+              <tr>
+                <th></th>
+                <th>Jira ID</th>
+                <th>Summary</th>
+              </tr>            
+              <script>
+              read_json_closed_bugs();
+              </script>
+
+            </table>
+          </div> 
+
+
+
+          <!--</div>-->
+          <!--END TABLE BAR-->
+        </td></tr></table>
+
+        <!--- OPEN ISSUES -->
+
+        <table width="95%"><tr><td>
+
+          <!--TABLE BAR-->
+          <div class="page-breaker"></div>
+          <div class="page-header">
+            <h1>Open Issues</h1>
+          </div>
+
+          <h2>Open Stories</h2>
+          <div class="panel panel-default">
+
+            <!-- Default panel contents -->
+
+
+            <!-- Table -->
+            <table class="table" id="open_story_table" width="75%">
+              <tr>
+                <th></th>
+                <th>Jira ID</th>
+                <th>Status</th>
+                <th>Summary</th>
+              </tr>            
+              <script>
+              read_json_open_stories();
+              </script>
+
+            </table>
+          </div> 
+
+          <!--TABLE BAR-->
+          <h2>Open Tasks</h2>
+          <div class="panel panel-default">
+            <!-- Default panel contents -->
+
+            <!-- Table -->
+            <table class="table" id="open_task_table" width="75%">
+              <tr>
+                <th></th>
+                <th>Jira ID</th>
+                <th>Status</th>
+                <th>Summary</th>
+              </tr>
+
+              <script>
+              read_json_open_tasks();
+              </script>
+
+            </table>
+          </div> 
+
+          <!--TABLE BAR-->
+          <h2>Open Bugs</h2>
+          <div class="panel panel-default">
+
+
+            <!-- Table -->
+            <table class="table" id="open_bug_table" width="75%">
+              <tr>
+                <th></th>
+                <th>Jira ID</th>
+                <th>Status</th>
+                <th>Summary</th>
+              </tr>            
+              <script>
+              read_json_open_bugs();
+              </script>
+
+            </table>
+          </div> 
+
+
+
+          <!--</div>-->
+          <!--END TABLE BAR-->
+        </td></tr></table>
+
+
+      </td>
+
+    </tr>
+
+  </table>
+
+</center>
+</body>
+</html>
