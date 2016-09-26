@@ -32,4 +32,4 @@ Navigate to the folder containing: GetJiraReleaseIssues.sh
 
 `$GetJiraReleaseIssues.sh -c "<fixVersion>"`
 
-Where <fixVersion> is the alphanumeric version name described in: https://your-jira-instance.com/jira/browse/<project code>#selectedTab=com.atlassian.jira.plugin.system.project:versions-panel&subset=-1
+Where _fixVersion_ is the alphanumeric version name described in: https://your-jira-instance.com/jira/browse/_project code_#selectedTab=com.atlassian.jira.plugin.system.project:versions-panel&subset=-1
